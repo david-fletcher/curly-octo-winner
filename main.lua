@@ -1,3 +1,5 @@
+local Message = require 'objects.message'
+
 -- globals
 local font = nil
 local messages = {}
@@ -27,9 +29,9 @@ end
 -- called every frame to draw to the screen; love.graphics.clear() is called automatically
 function love.draw()
     local prev_msg_y = love.graphics.getHeight() - 100
-    for _,msg in pairs(messages) do
-        prev_msg_y = prev_msg_y - msg:getHeight() - 10
-        love.graphics.draw( msg, 0, prev_msg_y )
+    for _, msg in pairs(messages) do
+        prev_msg_y = prev_msg_y - msg.height - 10
+        msg:draw( 0, prev_msg_y )
 
         -- stop rendering if it won't be seen anyways
         if( prev_msg_y < 0 ) then
@@ -53,13 +55,6 @@ function love.keypressed( key, scancode, isrepeat )
     -- add new paragraph to the screen
     if( scancode == "space" ) then
         local new_str_idx = math.floor( math.random( 5 ) )
-        table.insert( messages, 1, message_factory( texts[new_str_idx] ) )
+        table.insert( messages, 1, Message:createNew( font, texts[new_str_idx] ) )
     end
-end
-
--- creates new Text object with given string
-function message_factory( str )
-    local text = love.graphics.newText( font, nil )
-    text:addf( str, love.graphics.getWidth() - 20, "left", 10, 10 )
-    return text
 end
