@@ -1,9 +1,9 @@
 -- HELPER METHODS
 
 -- creates new Text object with given string
-local function message_factory( font, str, padX, padY )
+local function message_factory( font, str, limit, padX, padY )
     local text = love.graphics.newText( font, nil )
-    text:addf( str, love.graphics.getWidth() - (padX * 2), "left", padX, padY )
+    text:addf( str, limit - (padX * 2), "left", padX, padY )
     return text
 end
 
@@ -12,18 +12,19 @@ end
 local message = {}
 
 -- member functions
-function message:createNew( font, str, paddingX, paddingY )
+function message:createNew( parent, font, str, paddingX, paddingY )
     local m = {}
     setmetatable(m, self)
     self.__index = self
 
     -- given properties
+    m.parent = parent
     m.str = str
     m.paddingX = paddingX or 10
     m.paddingY = paddingY or 10
 
     -- calculated properties
-    m.text = message_factory( font, m.str, m.paddingX, m.paddingY )
+    m.text = message_factory( font, m.str, m.parent.width, m.paddingX, m.paddingY )
     m.width = m.text:getWidth()
     m.height = m.text:getHeight()
 
